@@ -28,9 +28,7 @@ public class DeckException extends Exception {
 
 	public eDeckExceptionType geteT() {
 		return eT;
-	}
-	//initial
-	
+	}	
 	
 	
 }
