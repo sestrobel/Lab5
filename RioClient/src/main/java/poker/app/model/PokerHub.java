@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import exceptions.DeckException;
 import netgame.common.Hub;
@@ -50,7 +51,24 @@ public class PokerHub extends Hub {
 	protected void messageReceived(int ClientID, Object message) {
 
 		if (message instanceof Action) {
-			
+			//This is what I did   -Ken
+			switch (((Action) message).getAction()){
+			case StartGame:
+				resetOutput();
+				Rule rle = new Rule((eGame) ((Action)message).geteGame());
+				UUID GameDealerID = new UUID(((Action)message).getPlayer());
+				GamePlay HubGamePlay = new GamePlay(rle, GameDealerID);
+				sendToAll(HubPokerTable);
+			case Sit:
+				resetOutput();
+				HubPokerTable.AddPlayerToTable(((Action) message).getPlayer());
+				sendToAll(message);
+			case Leave:
+				resetOutput();
+				HubPokerTable.RemovePlayerFromTable(((Action) message).getPlayer());
+				sendToAll(message);
+			}
+				
 			//TODO: If the Action = StartGame, start the game...
 			//		Create an instance of GamePlay, set all the parameters
 			
