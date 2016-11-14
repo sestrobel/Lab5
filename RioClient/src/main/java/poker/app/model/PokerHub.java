@@ -51,40 +51,41 @@ public class PokerHub extends Hub {
 	protected void messageReceived(int ClientID, Object message) {
 
 		if (message instanceof Action) {
-			//This is what I did   -Ken
-			switch (((Action) message).getAction()){
+
+			Action act = (Action) message;
+			switch (act.getAction()) {
 			case StartGame:
-				resetOutput();
-				Rule rle = new Rule((eGame) ((Action)message).geteGame());
-				UUID GameDealerID = new UUID(((Action)message).getPlayer());
+				// code needed to start game
+				// should create an instance of GamePlay, set all the parameters
+				Rule rle = new Rule((eGame) act.geteGame());
+				UUID GameDealerID = UUID.randomUUID();
 				GamePlay HubGamePlay = new GamePlay(rle, GameDealerID);
 				sendToAll(HubPokerTable);
+				break;
 			case Sit:
 				resetOutput();
-				HubPokerTable.AddPlayerToTable(((Action) message).getPlayer());
-				sendToAll(message);
+				// sits player at table and sends back updated table
+				HubPokerTable.AddPlayerToTable(act.getPlayer());
+				sendToAll(HubPokerTable);
+				break;
 			case Leave:
 				resetOutput();
-				HubPokerTable.RemovePlayerFromTable(((Action) message).getPlayer());
-				sendToAll(message);
+				// has player leave table and sends back updated table
+				HubPokerTable.RemovePlayerFromTable(act.getPlayer());
+				sendToAll(HubPokerTable);
+				break;
+			case GameState:
+				// sends back updated table
+				sendToAll(HubPokerTable);
+				break;
+			default:
+				break;
 			}
-				
-			//TODO: If the Action = StartGame, start the game...
-			//		Create an instance of GamePlay, set all the parameters
-			
-			//TODO: If Action = Sit, add the player to the table
-			
-			//TODO: If Action = Leave, remove the player from the table
-			
-			//TODO: If Action = Sit or Leave, send the Table
-			//		back to the client
-			
-			//TODO: If Action = GameState, send HubGamePlay 
-			//		back to the client
+
 		}
 
 		System.out.println("Message Received by Hub");
-		
+
 		sendToAll("Sending Message Back to Client");
 	}
 
